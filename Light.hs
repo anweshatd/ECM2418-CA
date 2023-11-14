@@ -1,5 +1,4 @@
 import Data.List
-import Text.Printf
 
 -- Function to check if given number is prime
 prime :: Int -> Bool
@@ -12,7 +11,7 @@ factorisable f n
     | otherwise = False
 
 
---calculates number of lit segements in given tuple
+--calculates and returns number of lit segements in given tuple
 numLitSeg :: (Int, Int, Int, Int) -> Int
 numLitSeg (hr, mn, dy, mt) = 
     let str = concat [if n < 10 then '0' : show n else show n | n <- [hr, mn, dy, mt]] --converts tuple to a string
@@ -56,77 +55,19 @@ generator1 =
         mt <- [01 .. 12]
     ]
 
+--adds minute to tuple 
 addMin :: (Int, Int, Int, Int) -> (Int, Int, Int, Int)
 addMin(hr, mn, dy, mt) 
-    | mn == 59 = (hr + 1, 00, dy, mt)
-    | otherwise = (hr, mn + 1, dy, mt)
+    | mn == 59 = (hr + 1, 00, dy, mt) --increments hour by 1 and makes minutes 00 if given tuple's minutes are 59
+    | otherwise = (hr, mn + 1, dy, mt) --increments minutes by 1 if minutes < 59
 
 tester1 :: (Int, Int, Int, Int) -> Bool
 tester1(hr, mn, dy, mt) =
     magic (hr, mn, dy, mt) --tuple is magic
     && magic (hr, mn, dy + 1, mt) --tuple exactly one day later is magic
     && numLitSeg(addMin(hr, mn, dy + 1, mt)) == (numLitSeg(hr, mn, dy, mt)+ numLitSeg(hr, mn, dy + 1, mt)) `div` 2
-    -- && numLitSeg(hr, mn, dy, mt) == (numLitSeg(hr, mn + 1, dy + 1, mt) + numLitSeg(hr, mn, dy + 1, mt)) `div` 2 ?
 
-
-x_tester1 :: Int 
-x_tester1 =
-    length [t | t <- ts, tester1 t] 
-    where
-    ts =
-        [ ( 6,59,17,24)
-        , ( 6,59,17,34)
-        , ( 6,59,27,14) , ( 6,59,27,41) , ( 8,59,12,46) , (16,59, 7,24) , (16,59, 7,42)
-        , (16,59, 7,43) , (16 ,59 ,27 ,40) , (18,59, 2,46) ]
-
-testmagicday :: (Int, Int, Int, Int) -> Bool
-testmagicday(hr, mn, dy, mt) =
-    numLitSeg(hr, mn + 1, dy + 1, mt) == (numLitSeg(hr, mn, dy, mt)+ numLitSeg(hr, mn, dy + 1, mt)) `div` 2
 
 main :: IO()
 main = 
     print(filter tester1 generator1)
-    --print (numLitSeg(17, 0, 28, 4))
-
-{-
---testing
-
-numLitSeg :: (Int, Int, Int, Int) -> String
-numLitSeg(hr, mn, dy, mt) =
-    concat [show hr, show mn, show dy, show mt]
-    
-main :: IO ()
-main = 
-    print (numLitSeg(09, 43, 28, 06))
-
-
-    tupleToString :: (Int, Int, Int, Int) -> String
-tupleToString(hr, mn, dy, mt) =
-    concat [show hr, show mn, show dy, show mt]
-
-numLitSeg :: Char -> Int -> Int
-numLitSeg char sum 
-    | char `elem` ['0'..'9'] && char `elem` "235" = sum + 5
-    | char `elem` ['0'..'9'] = sum + case char of
-        '0' -> 6
-        '1' -> 2
-        '4' -> 4
-        '6' -> 6
-        '7' -> 3
-        '8' -> 7
-        '9' -> 6
-    | otherwise = sum
-    
-
-main :: IO ()
-main = do
-    let str = tupleToString(09, 43, 28, 06)
-    let sum = foldr numLitSeg 0 str
-    print (str)
-
-import Text.Printf
-
-tupleToString :: (Int, Int, Int, Int) -> String
-tupleToString (hr, mn, dy, mt) = printf "%02d%02d%02d%02d" hr mn dy mt
-
- -}
