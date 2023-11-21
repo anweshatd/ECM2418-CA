@@ -59,6 +59,7 @@ generator1 =
 addMin :: (Int, Int, Int, Int) -> (Int, Int, Int, Int)
 addMin(hr, mn, dy, mt) 
     | mn == 59 = (hr + 1, 00, dy, mt) --increments hour by 1 and makes minutes 00 if given tuple's minutes are 59
+    | mn == 59 && hr == 23 = (00, 00, dy + 1, mt) --increments day by one is hour is 23 and minutes is 59
     | otherwise = (hr, mn + 1, dy, mt) --increments minutes by 1 if minutes < 59
 
 tester1 :: (Int, Int, Int, Int) -> Bool
